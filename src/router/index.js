@@ -1,11 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store'
 import Home from '../views/Home.vue'
+import Profile from '@/views/Profile'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: { requiresAuth: true }
+
   },
   {
     path: '/about',
@@ -22,4 +31,22 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  console.log(`🚦 navigating to ${to.name} from ${from.name}`)
+
+  store.dispatch('auth/initAuthentication')
+    .then(user => {
+      if (to.matched.some(route => route.meta.requiresAuth)) {
+        // protected route
+        if (user) {
+          next()
+        } else {
+          alert('This page is guard by sign in proses in vue router, You must sign in or register to view this page.')
+          next({ name: 'Home' })
+        }
+      } else {
+        next()
+      }
+    })
+})
 export default router

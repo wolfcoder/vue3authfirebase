@@ -3,5 +3,11 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import './firebase'
+import '@/assets/scss/custom.css'
 
-createApp(App).use(store).use(router).mount('#app')
+const app = createApp(App)
+app.use(store)
+app.use(router)
+
+app.mount('#app')
